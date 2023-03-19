@@ -77,6 +77,7 @@ public class SpellingBee {
         int wholeind = 0, leftind = 0, rightind = 0;
         ArrayList<String> left;
         ArrayList<String> right;
+
         if (list.size() == 1) {
             return;
         }
