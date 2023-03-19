@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -44,14 +45,77 @@ public class SpellingBee {
     //  Store them all in the ArrayList words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void generate() {
+        //add stuff to array list
         // YOUR CODE HERE — Call your recursive method!
+        wordGen("", letters);
+    }
+
+    public void wordGen(String first, String rest) {
+        //generates so many dupes, can't find out why - either find dupes doesnt work or method is wrong
+        if (rest.length() == 0) {
+            words.add(first);
+        }
+        else {
+            for (int i = 0; i < rest.length(); i++) {
+                //does the thing in the hint where it separates the "first" part of the word and the rest and recurses
+                wordGen(first + rest.charAt(i), rest.substring(0, i) + rest.substring(i + 1));
+            }
+            //more recursion!!
+            wordGen(first, rest.substring(1));
+        }
     }
 
     // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void sort() {
         // YOUR CODE HERE
+        //calls recursive method
+        mergeSort(words);
     }
+
+    public void mergeSort(ArrayList<String> list) {
+        int wholeind = 0, leftind = 0, rightind = 0;
+        ArrayList<String> left;
+        ArrayList<String> right;
+        if (list.size() == 1) {
+            return;
+        }
+        else {
+            int pointer = list.size() / 2;
+            //everything left of pointer gets added
+            left = new ArrayList<String>();
+            for (int i = 0; i < pointer; i++) {
+                left.add(list.get(i));
+            }
+            //everything right of pointer gets added
+            right = new ArrayList<String>();
+            for (int j = pointer; j < list.size(); j++) {
+                right.add(list.get(j));
+            }
+            //recursion
+            mergeSort(left);
+            mergeSort(right);
+
+            //compare strings
+            while(leftind < left.size() && rightind < right.size()) {
+                if (left.get(leftind).compareTo(right.get(rightind)) < 0) {
+                    //set list left half element
+                    //have to increment all of these in statement or else error because unreachable statement
+                    list.set(wholeind++, left.get(leftind++));
+                }
+                else {
+                    list.set(wholeind++, right.get(rightind++));
+                }
+                while(leftind < left.size()) {
+                    list.set(wholeind++, left.get(leftind++));
+                }
+                while(rightind < right.size()) {
+                    list.set(wholeind++, right.get(rightind++));
+                }
+            }
+        }
+    }
+
 
     // Removes duplicates from the sorted list.
     public void removeDuplicates() {
@@ -69,6 +133,23 @@ public class SpellingBee {
     //  If it is not in the dictionary, remove it from words.
     public void checkWords() {
         // YOUR CODE HERE
+        int i = 0;
+        while (i < words.size()) {
+            String word = words.get(i);
+            if (!found(word)) {
+                words.remove(i);
+            }
+            else {
+                i++;
+            }
+        }
+    }
+
+    public boolean found(String s) {
+        //found out arrays.binarysearch through google because original method was much more complicated and this is
+        //one line statement
+        int index = Arrays.binarySearch(DICTIONARY, s);
+        return index >= 0;
     }
 
     // Prints all valid words to wordList.txt
